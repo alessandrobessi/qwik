@@ -1,4 +1,7 @@
 # Binaries for programs and plugins
+main
+qwik
+
 *.exe
 *.exe~
 *.dll
