@@ -1,4 +1,4 @@
-module main
+module github.com/alessandrobessi/qwik
 
 go 1.13
 

@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/alessandrobessi/qwik/internal/wikistruct"
 	"github.com/manifoldco/promptui"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
-	"github.com/alessandrobessi/qwik/internal/wikistruct"
 )
 
 func main() {
