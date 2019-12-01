@@ -4,16 +4,29 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/alessandrobessi/qwik/internal/wikistruct"
 	"github.com/manifoldco/promptui"
+	"github.com/alessandrobessi/qwik/internal"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 )
 
-func main() {
+func request(url string) []byte {
+	resp, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err.Error())
+	}
 
+	return body
+}
+
+func main() {
+	var err error
 	var lang string
 
 	flag.StringVar(&lang, "lang", "en", "Wikipedia Language.")
@@ -31,19 +44,10 @@ func main() {
 		q = flag.Args()[0]
 	}
 
-	var url_search = "https://" + lang + ".wikipedia.org/w/api.php?action=query&list=search&srsearch=" + q + "&format=json"
-
-	resp_search, err := http.Get(url_search)
-	if err != nil {
-		panic(err)
-	}
-	body_search, err := ioutil.ReadAll(resp_search.Body)
-	if err != nil {
-		panic(err.Error())
-	}
-
+	url := "https://" + lang + ".wikipedia.org/w/api.php?action=query&list=search&srsearch=" + q + "&format=json"
+	body := request(url)
 	var searchResult wikistruct.SearchResult
-	err = json.Unmarshal(body_search, &searchResult)
+	err = json.Unmarshal(body, &searchResult)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -65,19 +69,11 @@ func main() {
 		return
 	}
 
-	url_summary := "https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + choice
-
-	resp_summary, err := http.Get(url_summary)
-	if err != nil {
-		panic(err)
-	}
-	body_summary, err := ioutil.ReadAll(resp_summary.Body)
-	if err != nil {
-		panic(err.Error())
-	}
+	url = "https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + choice
+	body = request(url)
 
 	var page wikistruct.Page
-	err = json.Unmarshal(body_summary, &page)
+	err = json.Unmarshal(body, &page)
 	if err != nil {
 		panic(err.Error())
 	}
